@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Routes>
+
+
+  <!-- 
+	Authentication and user access 
+  -->
+
+  <Route pattern="/auth/" handler="AuthRequestHandler">
+    <RouteHandler method="POST" responder="loginResponder">
+      
+      <parameters>
+        <parameter name="email" type="email"/>
+        <parameter name="pwd" type="string"/>
+      </parameters>
+     
+    </RouteHandler>
+  </Route>
+  
+  <Route pattern="/auth/logout/" handler="AuthRequestHandler">
+    <RouteHandler method="GET" responder="logoutResponder"/>
+  </Route>
+  
+  <Route pattern="/auth/status/" handler="AuthRequestHandler">
+    <RouteHandler method="GET" responder="loginStatusResponder"/>
+  </Route>
+
+
+
+  <!-- 
+	User password management
+  -->
+
+  
+  <Route pattern="/u/forgotpassword/" handler="UserRequestHandler">
+    <RouteHandler method="POST" responder="forgotPasswordResponder">
+      
+      <parameters>
+        <parameter name="email" type="email"/>
+      </parameters>
+    </RouteHandler>
+  </Route>
+  
+  <Route pattern="/u/resetpassword/" handler="UserRequestHandler">
+    <RouteHandler method="GET" responder="resetPasswordResponder">
+      
+      <parameters>
+        <parameter name="_" type="string"/>
+      </parameters>
+    </RouteHandler>
+    
+    <RouteHandler method="POST" responder="changePasswordResponder">
+      
+      <parameters>
+        <parameter name="pwd" type="string"/>
+        <parameter name="pwd-confirm" type="string"/>
+      </parameters>
+    </RouteHandler>
+  </Route>
+
+
+
+  <!-- 
+	Generic contact form 
+  -->
+ 
+  <Route pattern="/contact/" handler="ContactRequestHandler">
+    <RouteHandler method="POST" responder="postResponder">
+      
+      <parameters>
+        <parameter name="name" type="string"/>
+        <parameter name="email" type="email"/>
+        <parameter name="message" type="string"/>
+        <parameter name="captcha" type="string"/>
+        <parameter name="formid" type="string"/>
+      </parameters>
+     
+    </RouteHandler>
+  </Route>
+  
+
+
+  <!-- 
+	Securimage Captcha
+  -->
+
+  <Route pattern="/captcha/" handler="CaptchaRequestHandler">
+    <RouteHandler method="GET" responder="getResponder"/>
+  </Route>
+  
+
+
+
+
+  <!-- 
+	Image upload (Asynchronous ability)
+  -->
+  
+  <Route pattern="/enter/upload/" handler="EntryRequestHandler">
+    <RouteHandler method="GET" responder="fileUploadIFrameResponder"/>
+    <RouteHandler method="POST" responder="fileUploadResponder"/>
+  </Route>
+
+
+
+  <!-- 
+	Image utility functions
+  -->
+  
+  <Route pattern="/utils/rotateimage/" handler="ImageEditRequestHandler">
+    <RouteHandler method="POST" responder="rotateImageResponder"/>
+  </Route>
+  
+  
+
+
+  
+  
+</Routes>

@@ -1,0 +1,18 @@
+/* 
+    Document   : jquery.upgradebrowsers.min.css    
+    Author     : Eduardo Lingan (elingan@gmail.com)
+    Description: Styles to jQuery Upgrade Browsers Plugin.
+*/
+#upgradebrowsers{display:none;border:1px solid #ecb100;background-color:#ffda6a;height:60px;font-family:Verdana, Geneva, sans-serif;font-size:11pt;text-align:center;}
+#upgradebrowsers > div{width:700px;position:relative;margin:0 auto;}
+#upgradebrowsers p{float:left;width:460px;height:60px;display:table;margin:0 15px 0 0;}
+.upgradebrowsers_message{display:table-cell;vertical-align:middle;}
+#upgradebrowsers a{background:url('upgradebrowsers.png') no-repeat transparent;float:left;display:block;width:40px;height:0;font-size:7pt;text-decoration:none;text-align:center;border:none;padding-top:42px;line-height:15px;}
+#upgradebrowsers a:hover{font-weight:700;background-color:#fc0;}
+.upgradebrowsers_chrome{background-position:4px 5px !important;}
+.upgradebrowsers_firefox{background-position:-32px 5px !important;}
+.upgradebrowsers_opera{background-position:-68px 5px !important;}
+.upgradebrowsers_safari{background-position:-104px 5px !important;}
+.upgradebrowsers_iexplorer{background-position:-140px 5px !important;}
+.upgradebrowsers_close{float:right;width:18px;height:19px;background:url('upgradebrowsers.png') no-repeat transparent -179px 1px;position:absolute;top:0;right:0;cursor:pointer;margin-left:15px;}
+.upgradebrowsers_close:hover{background-color:#bababa;}

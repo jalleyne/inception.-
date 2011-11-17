@@ -1,0 +1,9 @@
+{
+	"string"	: {
+		"fr_CA": "string french"
+	},
+	
+	"string 2"	: {
+		"fr_CA": "string 2 french"
+	}
+}
