@@ -46,13 +46,6 @@ var inception = i = (function($){
 			/* */
 			if( typeof $.upgradebrowsers == 'function' )
 				$.upgradebrowsers();
-				
-			
-			inception.api.get('/auth/status/',null,function(resp){
-				console.log(resp);
-			},function(resp){
-				console.log(resp);				
-			});
 		}
 	};	
 })(jQuery);
@@ -96,10 +89,10 @@ inception.ui 	= (function(){
 								', '
 							)
 					);
-		popup_win.moveTo( 
-			(screen.width/2)-(w/2), 
-			(screen.height/2)-(h/2)
-		);
+		/*popup_win.moveTo( 
+			(screen.width/2)-(settings.width/2), 
+			(screen.height/2)-(settings.height/2)
+		);*/
 	}
 	
 	function closeWindow(){
@@ -150,7 +143,9 @@ inception.api = (function(){
 		  data		: data,
 		  dataType 	: 'json',
 		  success	: completeCallback,
-		  error		: errorCallback
+		  error		: function(resp){ 
+						errorCallback(JSON.parse(resp.responseText)); 
+					}
 		});
 	}
 	
@@ -197,7 +192,7 @@ inception.api = (function(){
 inception.uploads = (function(){
 	return {
 		
-		syncyUploadCompleteCallback : (function(){
+		asyncUploadCompleteCallback : (function(){
 			/* */
 			
 		}),
@@ -281,7 +276,7 @@ inception.page = (function(){
 inception.social = (function(){
 	
 	function fbShare(url,message){
-		inception.ui.openWindow(
+		inception.ui.openPopup(
 			'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(url)+'&t='+encodeURIComponent(message),
 			'fb-share',
 			{
@@ -318,7 +313,7 @@ inception.social = (function(){
 	
 	
 	function tweet(tweet){
-		inception.ui.openWindow(
+		inception.ui.openPopup(
 			'http://twitter.com/intent/tweet?text='+encodeURIComponent(tweet),
 			'tweet-share',
 			{
