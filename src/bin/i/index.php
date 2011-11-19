@@ -55,7 +55,7 @@ if( $map=$i->parseRouteMap() ){
 	if( $i->canAccess() ){
 		
 		/* Validate request parameters */
-		if( $err = $i->validateRequest() ){
+		if( $errors = $i->validateRequest() ){
 			
 			/* */
 			$response = new HTTPRequestError(
@@ -67,12 +67,12 @@ if( $map=$i->parseRouteMap() ){
 			if( isset($_REQUEST['error_redirect']) ){
 				$response->redirect(
 							$_REQUEST['error_redirect'],
-							urlencode(json_encode($error))
+							$errors
 						);
 			}
 			/* else print the response as body*/
 			else {
-				$response->send(urlencode(json_encode($error)));
+				$response->send($errors);
 			}
 		}
 		else{
