@@ -22,7 +22,7 @@
  *
  * @author Jovan Alleyne <me@jalleyne.ca>
  */
-class InceptionWebServiceApplication {
+class InceptionRESTfulDataApplication {
 	
     /**
     * Version.

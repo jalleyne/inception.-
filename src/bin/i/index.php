@@ -18,7 +18,7 @@
 
 
 /**
- * Initializes the Inception Web Service application
+ * Initializes the Inception RESTful Data application
  *
  * @author Jovan Alleyne <me@jalleyne.ca>
  */
@@ -40,7 +40,7 @@ if( defined('DB_HOST') && defined('DB_NAME') ){
 
 
 /* Instanciate InceptionWebServiceApplication class */
-$i = new InceptionWebServiceApplication();
+$i = new InceptionRESTfulDataApplication();
 
 /* Load Route map from file system */
 $i->loadRouteMap(ROUTE_FILE_PATH);
