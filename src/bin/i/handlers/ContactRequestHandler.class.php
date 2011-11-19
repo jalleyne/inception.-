@@ -65,25 +65,24 @@ class ContactRequestHandler {
 								$request_data['name'],
 								replace_message_vars( $vars, $values, $message )
 						)){
-				return array("success"=>TRUE);			
+				return new HTTPResponse();
 			}
 			else {
 				/* */
-				return array("error"=>array(
-										"type" 		=> "RequestException",
-										"message"	=> "Error sending contact email. Please try again."
-									)
+				return new HTTPErrorResponse(
+								"RequestException",
+								"Error sending contact email. Please try again."
 							);
 			}
 		}
 		else {
 			/* */
-			$error = new HTTPRequestError(
+			$error = new HTTPErrorResponse(
 								"RequestException",
 								"Error sending contact email. Please correct the errors."
 							);
 			$error->errors = array(
-						new HTTPRequestError(
+						new HTTPErrorResponse(
 								"captcha",
 								"Security code incorrect"
 							);

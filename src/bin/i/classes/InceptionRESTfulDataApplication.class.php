@@ -315,11 +315,20 @@ class InceptionRESTfulDataApplication {
 		$response = $obj->$handlerFunc($this->request_data);
 			
 		/* */
-		if( isset($_REQUEST['response_redirect']) ){
-			$response->redirect( $_REQUEST['response_redirect'] );
+		if( $response instanceof HTTPResponse ){
+			/* */
+			if( isset($_REQUEST['response_redirect']) ){
+				$response->redirect( $_REQUEST['response_redirect'] );
+			}
+			else {
+				$response->send();
+			}
 		}
 		else {
-			$response->send();
+			/* As a fallback print the response */ 
+			exit(json_pretty_print(
+					json_encode($response)
+				);
 		}
 	}
 }

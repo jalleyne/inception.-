@@ -18,7 +18,7 @@
 
 
 /**
- * HTTP Response for an InceptionWebServiceApplication instance
+ * HTTP Response object
  *
  * @author Jovan Alleyne <me@jalleyne.ca>
  */

@@ -23,7 +23,13 @@
  * @author Jovan Alleyne <me@jalleyne.ca>
  */
 
-class HTTPRequestError extends HTTPErrorResponse {
+class HTTPErrorResponse extends HTTPErrorResponse {
+	
+	public $message;
+	
+	public $type;
+	
+	public $errors;
 	
 	/**
 	* Constructor
@@ -32,7 +38,27 @@ class HTTPRequestError extends HTTPErrorResponse {
 		if( $type ) $this->type 		= $type;
 		if( $message ) $this->message 	= $message;
 		
-		$this->httpStatusCode = 400;
-		$this->httpStatusMessage = 'Bad Request';
+		$this->httpStatusCode = 406;
+		$this->httpStatusMessage = 'Not Acceptable';
+	}
+	
+	/**
+	* 
+	*/
+	public function __toString(){
+		$response = array(
+						'error' => array(
+										'message'	=> $this->message,
+										'type'		=> $this->type,
+										'date'		=> time()
+									)
+						);
+			
+		if( $this->errors && is_array($this->errors) && count($this->errors) )
+			$response['errors'] = $errors;
+			
+		return json_pretty_print(
+					json_encode($response)
+				);
 	}
 }
