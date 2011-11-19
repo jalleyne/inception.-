@@ -315,16 +315,11 @@ class InceptionRESTfulDataApplication {
 		$response = $obj->$handlerFunc($this->request_data);
 			
 		/* */
-		if( isset($_REQUEST['success_redirect']) ){
-			header('Location: '.
-					$_REQUEST['success_redirect'].
-					'&response='.urlencode(json_encode($response))
-				);
-			exit();
+		if( isset($_REQUEST['response_redirect']) ){
+			$response->redirect( $_REQUEST['response_redirect'] );
 		}
 		else {
-			header("Content-Type: text/javascript; charset=UTF-8");
-			exit(json_pretty_print(json_encode($response)));
+			$response->send();
 		}
 	}
 }
