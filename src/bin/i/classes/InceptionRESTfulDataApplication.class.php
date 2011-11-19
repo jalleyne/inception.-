@@ -264,7 +264,7 @@ class InceptionRESTfulDataApplication {
 							empty($_REQUEST[ (string)$param->attributes()->name ])) ){
 						$errors[] = new HTTPRequestError( 
 												(string)$param->attributes()->name,
-												(string)$param->attributes()->name . " is a required field"
+												"Required field"
 									 		);
 					}else if( $error = validate( 
 										$_REQUEST[ (string)$param->attributes()->name ], 
@@ -328,7 +328,7 @@ class InceptionRESTfulDataApplication {
 			/* As a fallback print the response */ 
 			exit(json_pretty_print(
 					json_encode($response)
-				);
+				));
 		}
 	}
 }
