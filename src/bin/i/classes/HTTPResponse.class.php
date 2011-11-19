@@ -27,22 +27,22 @@ class HTTPResponse {
 	/**
 	* Response Http Status Code
 	*/
-	public $httpStatusCode = 200;
+	protected $httpStatusCode = 200;
 	
 	/**
 	* Response Http Status Message
 	*/
-	public $httpStatusMessage = 'Ok';
+	protected $httpStatusMessage = 'Ok';
 
 	/**
 	* Response format
 	*/
-	public $format = 'json';
+	protected $format = 'json';
 	
 	/**
 	* Response body
 	*/
-	public $data;
+	protected $data;
 
     function __construct() {
     }

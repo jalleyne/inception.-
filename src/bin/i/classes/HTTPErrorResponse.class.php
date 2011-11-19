@@ -23,13 +23,13 @@
  * @author Jovan Alleyne <me@jalleyne.ca>
  */
 
-class HTTPErrorResponse extends HTTPErrorResponse {
+class HTTPErrorResponse extends HTTPResponse {
 	
 	public $message;
 	
 	public $type;
 	
-	public $errors;
+	private $errors;
 	
 	/**
 	* Constructor
@@ -53,9 +53,9 @@ class HTTPErrorResponse extends HTTPErrorResponse {
 										'date'		=> time()
 									)
 						);
-			
-		if( $this->errors && is_array($this->errors) && count($this->errors) )
-			$response['errors'] = $errors;
+		
+		if( $this->data && is_array($this->data) && count($this->data) )
+			$response['errors'] = $this->data;
 			
 		return json_pretty_print(
 					json_encode($response)
