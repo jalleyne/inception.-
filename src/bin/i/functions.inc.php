@@ -130,6 +130,22 @@ function is_valid_postalcode( $pcode ){
 function validate($val,$type){
 	
 	switch($type){
+		
+		case 'array':
+			if( is_array($val) && count($val) ){
+				foreach( $val as $v ){
+					$v = trim($v);
+					if( empty($v) )
+						return 'Required field';
+				}
+			}
+			else return 'Required field';
+			break;
+			
+		case 'postalcode':
+			if( !is_valid_postalcode( $val ) ) return "Invalid Postal code"; 
+			break;
+			
 		case 'email':
 			if( !is_valid_email( $val ) ) return "Invalid email address"; 
 			break;
