@@ -133,11 +133,9 @@ function validate($val,$type){
 		
 		case 'array':
 			if( is_array($val) && count($val) ){
-				foreach( $val as $v ){
-					$v = trim($v);
-					if( empty($v) )
+				foreach( $val as $v )
+					if( !strlen($v) )
 						return 'Required field';
-				}
 			}
 			else return 'Required field';
 			break;
@@ -151,7 +149,7 @@ function validate($val,$type){
 			break;
 	}
 	
-	return null;
+	return NULL;
 }
 
 
