@@ -89,10 +89,10 @@ inception.ui 	= (function(){
 								', '
 							)
 					);
-		/*popup_win.moveTo( 
+		popup_win.moveTo( 
 			(screen.width/2)-(settings.width/2), 
 			(screen.height/2)-(settings.height/2)
-		);*/
+		);
 	}
 	
 	function closeWindow(){
