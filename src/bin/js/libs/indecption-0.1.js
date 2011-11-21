@@ -33,6 +33,12 @@ var inception = i = (function($){
 		*/
 		init : function(data){
 			
+			/* */
+			inception.data = $.extend(
+								inception.data,
+								data
+							);
+			
 			/* initialize dynamic ajax page loading */
 			if( !data.disable_dynamic_page_requests ){
 				/* */
@@ -46,11 +52,7 @@ var inception = i = (function($){
 					window.location = l;
 					return null;
 				}
-
 			}
-			
-			/* */
-			i.props = $.extend(i.data,data);
 			
 			/* */
 			$(inception.ready);
