@@ -32,6 +32,23 @@ var inception = i = (function($){
 		* Inception initialization
 		*/
 		init : function(data){
+			
+			/* initialize dynamic ajax page loading */
+			if( !data.disable_dynamic_page_requests ){
+				/* */
+				var loc = window.location;
+				if( !loc.hash.length ){
+					var l = loc.protocol
+					+'//'+loc.host
+					+'#!'+loc.pathname
+					+(loc.search.length?('?'+loc.search):'');
+
+					window.location = l;
+					return null;
+				}
+
+			}
+			
 			/* */
 			i.props = $.extend(i.data,data);
 			
@@ -46,6 +63,13 @@ var inception = i = (function($){
 			/* */
 			if( typeof $.upgradebrowsers == 'function' )
 				$.upgradebrowsers();
+			
+			if( !inception.data.disable_dynamic_page_requests ){
+				/* */
+				$(window).bind('hashchange', function() {
+					inception.page.load(window.location.hash);
+				}).trigger('hashchange');
+			}
 		}
 	};	
 })(jQuery);
@@ -136,7 +160,8 @@ inception.forms = (function(){
 */
 inception.api = (function(){
 	
-	function api(method,url,data,completeCallback,errorCallback){
+	function api(method,url,data,
+		completeCallback,errorCallback){
 		$.ajax({
 		  type		: method,
 		  url		: inception.data.api+url,
@@ -150,35 +175,43 @@ inception.api = (function(){
 	}
 	
 	return {
-		get : (function(url,data,completeCallback,errorCallback){
+		get : (function(url,data,
+			completeCallback,errorCallback){
 			api('GET',
 				url,
 				data,
-				completeCallback,errorCallback
+				completeCallback,
+				errorCallback
 			);
 		}),
 		
-		post : (function(url,data,completeCallback,errorCallback){
+		post : (function(url,data,
+			completeCallback,errorCallback){
 			api('POST',
 				url,
 				data,
-				completeCallback,errorCallback
+				completeCallback,
+				errorCallback
 			);
 		}),
 		
-		put : (function(url,data,completeCallback,errorCallback){
+		put : (function(url,data,
+			completeCallback,errorCallback){
 			api('PUT',
 				url,
 				data,
-				completeCallback,errorCallback
+				completeCallback,
+				errorCallback
 			);
 		}),
 		
-		delete : (function(url,data,completeCallback,errorCallback){
+		delete : (function(url,data,
+			completeCallback,errorCallback){
 			api('DELETE',
 				url,
 				data,
-				completeCallback,errorCallback
+				completeCallback,
+				errorCallback
 			);
 		})
 		
@@ -225,24 +258,27 @@ inception.page = (function(){
 			var callback = arg4;
 		/* */
 		$.get(inception.data.page_request_proxy_url,params,function(data){
-			$(section).html(data);
+			$(section).html($(data).find(section));
 			if( typeof callback == 'function' ) callback();
 		},'html').error(function(data){
 			switch(parseInt(data.status)){
 			case 403:
-				fchc.page.load( inception.data.auth_denied_redirect );
+				inception.page.load( inception.data.auth_denied_redirect );
 				break;
 			}
 		});;
 	}
 	
-	function loadPage(link){
+	function loadPage(link,page_target){
 		/* */
 		$.get(inception.data.page_request_proxy_url,{r:link},function(data){
 			/* */
-			inception.page.write( data );
+			inception.page.write( data, page_target );
 			/* */
-			_gaq.push(['_trackPageview',page]);
+			_gaq.push([
+				'_trackPageview',
+				link.replace('#!','')
+			]);
 		},'html').error(function(data){
 			/* */
 			switch(parseInt(data.status)){
@@ -258,8 +294,36 @@ inception.page = (function(){
 		});
 	};
 	
-	function writePage(html,target){
-		$(target||'body').html(html)
+	function writePage(html_string,container){
+		/* */
+		if( $('header').html() != $(html_string).find('header').html() ){
+			$('header').html(
+				$(html_string).find('header').html()
+			);
+		}
+		
+		/* */
+		container = container||'#main';
+		/* */
+		$(container).html(
+			$(html_string).find(container).html()
+		);
+		
+		/* */
+		if( $('footer').html() != $(html_string).find('footer').html() ){
+			$('footer').html(
+				$(html_string).find('footer').html()
+			);
+		}
+		
+		
+		/* */
+		$('a[href^="/"]').not('a[target^="_"]').each(function(){
+			$(this).attr(
+				'href',
+				'#!'+$(this).attr('href')
+			);	
+		});
 	}
 	
 	return {
@@ -277,7 +341,9 @@ inception.social = (function(){
 	
 	function fbShare(url,message){
 		inception.ui.openPopup(
-			'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(url)+'&t='+encodeURIComponent(message),
+			'https://www.facebook.com/sharer/sharer.php?u='
+			+encodeURIComponent(url)
+			+'&t='+encodeURIComponent(message),
 			'fb-share',
 			{
 				'width' : 600,
@@ -314,7 +380,8 @@ inception.social = (function(){
 	
 	function tweet(tweet){
 		inception.ui.openPopup(
-			'http://twitter.com/intent/tweet?text='+encodeURIComponent(tweet),
+			'http://twitter.com/intent/tweet?text='
+			+encodeURIComponent(tweet),
 			'tweet-share',
 			{
 				'width' : 600,

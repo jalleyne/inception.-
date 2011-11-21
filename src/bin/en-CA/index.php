@@ -10,7 +10,7 @@
 		home content
     </div>
     <footer>
-
+		footer <a href="/test/">internal link</a>
     </footer>
   </div> <!--! end of #container -->
 

@@ -20,6 +20,7 @@
 			
 			'api'					: '/i',
 			
+			//'disable_dynamic_page_requests' : true, // disable auto switching of links /test/ to #!/test/ for faster page loads
 			'page_request_proxy_url' : '/pageproxy.php',
 			'page_not_found_redirect': '/404/',
 			'auth_denied_redirect'	 : '/login/'
