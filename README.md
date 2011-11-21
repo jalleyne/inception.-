@@ -18,10 +18,12 @@ Inception.* is a collective of code based on methodologies used to develop web b
 * PHP RESTful Data access API
 * RESTful page structures/ view route mapping
 * Facebook/ Twitter share integration
+* [Facebook OpenGraph](https://developers.facebook.com/docs/opengraph/) enabled
 * JavaScript helper Library
 * HTML5 Boilerplate Features
 * Speedup page loads with ajax page requests
 * [Upgrade browsers](http://upgradebrowsers.com/) prompt for outdated browsers
+* HTTPS/ SSL aware
 
 
 ## Inception RESTful Data API Quick start
@@ -29,6 +31,7 @@ Inception.* is a collective of code based on methodologies used to develop web b
 1. Modify /src/bin/settings.php to edit database access
 2. Modify /scr/bin/i/routes.xml to setup data access routes
 3. Create route handlers in /src/bin/i/handlers/
+
 
 ### Features
 
@@ -38,6 +41,7 @@ Inception.* is a collective of code based on methodologies used to develop web b
 * JSON response format
 
 ## License
+
 
 ### Major components:
 
