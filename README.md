@@ -20,6 +20,8 @@ Inception.* is a collective of code based on methodologies used to develop web b
 * Facebook/ Twitter share integration
 * JavaScript helper Library
 * HTML5 Boilerplate Features
+* Speedup page loads with ajax page requests
+* [Upgrade browsers](http://upgradebrowsers.com/) prompt for outdated browsers
 
 
 ## Inception RESTful Data API Quick start
@@ -39,11 +41,12 @@ Inception.* is a collective of code based on methodologies used to develop web b
 
 ### Major components:
 
-* HTML5 Boilerplater: 
+* HTML5 Boilerplater: Public Domain
 * jQuery: MIT/GPL license
 * Modernizr: MIT/BSD license
 * Respond.js: MIT/GPL license
 * Normalize.css: Public Domain
+* Upgrade Browsers: Public Domain
 
 ### Everything else:
 
