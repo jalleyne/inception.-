@@ -273,7 +273,11 @@ inception.page = (function(){
 	
 	function loadPage(link,page_target){
 		/* */
-		$.get(inception.data.page_request_proxy_url,{r:link},function(data){
+		$.get(
+			inception.data.page_request_proxy_url,
+			{
+				r:link
+			},function(data){
 			/* */
 			inception.page.write( data, page_target );
 			/* */
@@ -286,10 +290,16 @@ inception.page = (function(){
 			switch(parseInt(data.status)){
 			case 500:
 			case 404:
-				inception.page.load( inception.data.page_not_found_redirect );
+				inception.page.load( 
+					inception.data.page_not_found_redirect, 
+					page_target
+				);
 				break;
 			case 403:
-				inception.page.load( inception.data.auth_denied_redirect );
+				inception.page.load( 
+					inception.data.auth_denied_redirect, 
+					page_target
+				);
 				break;
 				
 			}
@@ -298,26 +308,36 @@ inception.page = (function(){
 	
 	function writePage(html_string,container){
 		/* */
-		if( $('header').html() != $(html_string).find('header').html() ){
-			$('header').html(
-				$(html_string).find('header').html()
-			);
+		var html = $(html_string);
+		
+		/* */
+		if( $('header',html).length ){
+			if( $('header').html() != $('header',html).html() ){
+				$('header').html(
+					$('header',html).html()
+				);
+			}
 		}
+		else $('header').html('');
 		
 		/* */
 		container = container||'#main';
+		
 		/* */
 		$(container).html(
-			$(html_string).find(container).html()
+			$(container+' *',html).html()
 		);
 		
-		/* */
-		if( $('footer').html() != $(html_string).find('footer').html() ){
-			$('footer').html(
-				$(html_string).find('footer').html()
-			);
-		}
 		
+		/* */
+		if( $(html).find('footer').length ){
+			if( $('footer').html() != $('footer',html).html() ){
+				$('footer').html(
+					$('footer',html).html()
+				);
+			}
+		}
+		else $('footer').html('');
 		
 		/* */
 		$('a[href^="/"]').not('a[target^="_"]').each(function(){

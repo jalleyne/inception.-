@@ -82,10 +82,8 @@ if( file_exists($content.'.php') ){
 	ob_end_flush();
 }
 else {
-	echo CONTENT_ROOT;
-	//echo $content;
-	//header('HTTP/1.0 404 Not Found');
-	//include '404.php';
+	header('HTTP/1.0 404 Not Found');
+	include '404.php';
 }
 
 
