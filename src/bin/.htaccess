@@ -24,13 +24,9 @@ SetEnv DEFAULT_LANGUAGE en-CA
 SetEnv TZ America/Toronto
 SetEnv HTTP_ACCEPT_LANGUAGE en-CA,fr-CA
 
+<IfModule mod_headers.c>
 Header set Accepted-Languages "en-CA,fr-CA"
-#Header set Content-Language "%{lang}e" env=lang
-#Header set Set-Cookie "language=%{lang}e; path=/;" env=lang
-
-
-
-#[env=lang:%2]
+</IfModule>
 
 
 # ----------------------------------------------------------------------
