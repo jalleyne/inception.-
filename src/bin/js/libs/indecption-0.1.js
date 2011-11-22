@@ -260,7 +260,7 @@ inception.page = (function(){
 			var callback = arg4;
 		/* */
 		$.get(inception.data.page_request_proxy_url,params,function(data){
-			$(section).html($(data).find(section));
+			$(section).html(data);
 			if( typeof callback == 'function' ) callback();
 		},'html').error(function(data){
 			switch(parseInt(data.status)){
