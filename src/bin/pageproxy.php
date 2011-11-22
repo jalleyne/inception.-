@@ -39,7 +39,7 @@ $request_parts = explode('/',$request);
 
 while(count($request_parts)){
 	array_pop($request_parts);
-	$path = implode('/',$request_parts);
+	$path = implode('/',$request_parts).'/';
 	
 	if( is_dir(CONTENT_ROOT.$path) )
 		break;
@@ -52,7 +52,7 @@ switch( $request ){
 		$content = 'index';
 		break;
 	case $path:
-		if ( is_file(CONTENT_ROOT.$path.'/index.php') ) 
+		if ( is_file(CONTENT_ROOT.$path.'index.php') ) 
 			$content = $path.'index';
 		break;
 	default:
@@ -67,10 +67,10 @@ switch( $request ){
 
 chdir(CONTENT_ROOT);
 
-if( file_exists($content.'.php') ){
+if( file_exists('./'.$content.'.php') ){
 	
 	ob_start();
-	include $content.'.php';
+	include './'.$content.'.php';
 	
 	if( isset($enforce_login) && $enforce_login ){
 		header('HTTP/1.1 403 Forbidden');
@@ -82,8 +82,5 @@ if( file_exists($content.'.php') ){
 }
 else {
 	header('HTTP/1.0 404 Not Found');
-	include '404.php';
+	include './404.php';
 }
-
-
-?>
