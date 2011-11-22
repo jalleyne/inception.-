@@ -17,7 +17,7 @@ if( $_SERVER['HTTP_HOST']!='localhost' ){
 	define('DB_PASS','password');
 	define('DB_NAME','database_name');
 	
-}else{	
+}else{
 	
 	/* Local server */
 	define('DB_HOST','localhost');
@@ -27,11 +27,23 @@ if( $_SERVER['HTTP_HOST']!='localhost' ){
 }
 
 
-/* Email constants */
-define('NOREPLY_EMAIL',				'no-reply@domain.com');
-define('EMAIL_SENDER_FROM',			'Sender Name');
-define('CONATCT_REQUEST_RECEPIENT', 'consumer-response@domain.com');
 
+/* Set base directory and uri constants. Determines if SSL is enabled and 
+*  preceeds the domain with the proper protocal.
+*/
+define('BASE_DIR', 		'/');
+define('BASE_URI',		(isset($_SERVER['HTTPS'])&&
+						
+						// Note that when using ISAPI with IIS, the value will 
+						//be off if the request was not made 
+						//through the HTTPS protocol.
+						//Ref PHP Manual: http://goo.gl/yD35i
+						$_SERVER['HTTPS']!='off' 
+						
+						?'https':'http')
+						.'://'.$_SERVER['HTTP_HOST']
+						.BASE_DIR
+						);
 
 
 /* 

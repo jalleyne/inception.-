@@ -11,6 +11,14 @@ ini_set('display_errors',TRUE);
 require_once $_SERVER['DOCUMENT_ROOT']."/settings.php";
 
 
+
+/* Email constants */
+define('NOREPLY_EMAIL',						'no-reply@domain.com');
+define('CONATCT_REQUEST_RECEPIENT_NAME',	'Consumer Representative');
+define('CONATCT_REQUEST_RECEPIENT_EMAIL', 	'consumer-response@domain.com');
+
+
+
 /* Paths to load into include path settings */
 $lib_paths = array();
 $lib_paths[] = getcwd().'/classes';
@@ -20,8 +28,6 @@ $lib_paths[] = getcwd();
 
 /* */
 define('ROUTE_FILE_PATH', 	$_SERVER['DOCUMENT_ROOT'].'/'.basename(dirname(__FILE__)).'/routes.xml');
-define('BASE_DIR', 			'/');
-define('BASE_URI',			(isset($_SERVER['HTTPS'])&&$_SERVER['HTTPS']?'https':'http').'://'.$_SERVER['HTTP_HOST'].BASE_DIR);
 define('WS_URI',			BASE_URI.basename(dirname(__FILE__)));
 
 
