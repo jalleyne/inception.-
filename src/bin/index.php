@@ -24,5 +24,12 @@
  */
 
 
+/**
+ * NOTE: This is not your content file. Place all content inside your localized
+ * folder. example /en-CA/index.php will replace what your would expect here as
+ * your default page.
+ */
+
+
 /* */
 require_once "pageproxy.php";
