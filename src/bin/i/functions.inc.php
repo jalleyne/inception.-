@@ -298,7 +298,7 @@ function send_email( $subject, $recepient_name, $to, $from, $from_name, $message
 		 */
 		 
 		return mail( 
-							"$recepientName<$to>", 
+							"$recepient_name<$to>", 
 							$subject, 
 							$message,
 							email_headers( $from, $from_name ) 
