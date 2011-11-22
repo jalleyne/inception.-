@@ -77,6 +77,12 @@ td { vertical-align: top; }
 
 
 
+/* ==|== localization classes ======================================== */
+
+html[lang="fr-CA"] { 
+	
+}
+
 
 
 
