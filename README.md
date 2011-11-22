@@ -42,6 +42,9 @@ Inception.* is a collective of code based on methodologies used to develop web b
 
 ## License
 
+All of the credit really goes to Paul Irish and the rest of the team contributing to 
+HTML5 Boilerplate. These are modifications and methodologies to build a more specific type of 
+web application.
 
 ### Major components:
 
