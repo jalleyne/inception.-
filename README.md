@@ -5,7 +5,7 @@ Inception.* is a collective of code based on methodologies used to develop web b
 
 ## Quick start
 
-1. Clone the git repo - `git clone git://github.com/h5bp/html5-boilerplate.git` - or [download it](https://github.com/jalleyne/inception.-/zipball/master)
+1. Clone the git repo - `git clone git://github.com/jalleyne/inception.-.git` - or [download it](https://github.com/jalleyne/inception.-/zipball/master)
 2. Modify /src/bin/settings.php to match your site configuration
 3. Remove unwanted features/ files
 4. Add files to /src/bin/en-CA default content folder
