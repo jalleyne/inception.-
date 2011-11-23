@@ -87,6 +87,13 @@ class InceptionRESTfulDataApplication {
 	**/
 	protected function parseRequestURI(){
 		/* */
+		if( $_SERVER['SCRIPT_NAME']=='/index.php' )
+			$this->uri = str_ireplace(
+								'?' . $_SERVER['QUERY_STRING'],
+								'',
+								$_SERVER['REQUEST_URI'] 
+							);
+		else 
 		$this->uri = str_ireplace(
 							dirname($_SERVER['SCRIPT_NAME']),
 							'',
@@ -100,7 +107,6 @@ class InceptionRESTfulDataApplication {
 		$this->uri_parts = array_values(
 								array_filter(
 									explode( '/', $this->uri )));	
-
 	}
 	
 	
