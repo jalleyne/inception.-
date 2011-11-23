@@ -100,7 +100,7 @@ inception.ui 	= (function(){
 			'status'		: 0,
 			'scrollbars'	: 0,
 			'width'			: 300,
-			'height'		: 400,
+			'height'		: 400
 		},window_settings);
 		
 		/* */
@@ -207,7 +207,7 @@ inception.api = (function(){
 			);
 		}),
 		
-		delete : (function(url,data,
+		"delete" : (function(url,data,
 			completeCallback,errorCallback){
 			api('DELETE',
 				url,
