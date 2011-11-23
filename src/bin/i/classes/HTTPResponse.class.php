@@ -45,9 +45,12 @@ class HTTPResponse {
 	protected $data;
 
     function __construct() {
+    }    
+
+    public function __set($name, $value) {
+        $this->data[$name] = $value;
     }
-    
-    
+
     public function send($data=NULL){
 		/* */
 		if( $data ) $this->data = $data;
