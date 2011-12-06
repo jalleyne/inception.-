@@ -28,10 +28,11 @@ class DBO {
 	private $db;
 	
 	function __construct(){
-		$this->db = @mysql_connect( DB_HOST, DB_USER, DB_PASS );
+		$this->db = @mysql_connect( DB_HOST, DB_USER, DB_PASS ) or die('Error connecting to DB!');
 		if( $this->db ){
-			mysql_select_db( DB_NAME, $this->db );
+			mysql_select_db( DB_NAME, $this->db ) or die('Error selecting database ['.DB_NAME.'].');
 		}
+		else throw('Error creating database resource.');
 	}
 	
 	public function prepare($q,$v){
