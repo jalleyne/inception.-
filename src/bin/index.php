@@ -24,6 +24,16 @@
  */
 
 
+
+/* 
+* Set language constant, first check the cookie 
+* then resort to default language set in .htaccess file
+*/
+define('LANGUAGE', 		
+		empty($_COOKIE['LANGUAGE'])?
+		getenv('DEFAULT_LANGUAGE'):$_COOKIE['LANGUAGE']);
+
+
 /**
  * NOTE: This is not your content file. Place all content inside your localized
  * folder. example /en-CA/index.php will replace what your would expect here as

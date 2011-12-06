@@ -47,23 +47,11 @@ define('BASE_URI',		(isset($_SERVER['HTTPS'])&&
 
 
 /* 
-* Set language constant, first check the cookie 
-* then resort to default language set in .htaccess file
-*/
-define('LANGUAGE', 		
-		empty($_COOKIE['LANGUAGE'])?
-		getenv('DEFAULT_LANGUAGE'):$_COOKIE['LANGUAGE']);
-
-/* 
 * Set content root based on language setting, if 
 * folder does not exist look for default language folder 
 */
 define('CONTENT_ROOT',	
-		'./'.(is_dir($_SERVER['DOCUMENT_ROOT'].'/'.LANGUAGE)?
-		LANGUAGE:getenv('DEFAULT_LANGUAGE')));
-
-
-
-
-
-
+			$_SERVER['DOCUMENT_ROOT'].'/' . 
+			(is_dir($_SERVER['DOCUMENT_ROOT'].'/'.LANGUAGE)?
+			LANGUAGE:getenv('DEFAULT_LANGUAGE'))
+	);

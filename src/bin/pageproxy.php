@@ -24,7 +24,12 @@
 
 
 /* */
-require_once $_SERVER['DOCUMENT_ROOT'].'/settings.php';
+if( !defined('CONTENT_ROOT') )
+	require_once $_SERVER['DOCUMENT_ROOT'].'/settings.php';
+	
+
+/* */
+require_once $_SERVER['DOCUMENT_ROOT'].'/php/functions.inc.php';
 	
 	
 /* */
@@ -32,49 +37,57 @@ if( isset($_REQUEST['r']) )
 $request_uri = urldecode($_REQUEST['r']);
 else $request_uri = $_SERVER['REQUEST_URI'];
  
+/* Remove query string from uri to match file */
+$request_uri = str_replace(
+					'?'.$_SERVER['QUERY_STRING'],
+					'',
+					$request_uri
+				);
 
+/* strip hash and split url into parts*/
 $request = str_replace('#!','',$request_uri);
 $request_parts = explode('/',$request);
 
 
+
+/* loop over uri parts to match to path on file system*/
 while(count($request_parts)){
 	array_pop($request_parts);
-	$path = implode('/',$request_parts).'/';
+	$path = CONTENT_ROOT.implode('/',$request_parts);
 	
-	if( is_dir(CONTENT_ROOT.$path) )
+	if( is_file($path.'/index.php') ){
+		$content = '/index.php';
 		break;
+	}
+	else if( is_file($path.'.php') ){
+		$content = '.php';
+		break;
+	}
 }
 
-
-switch( $request ){
-	case '/':
-	case '':
-		$content = 'index';
-		break;
-	case $path:
-		if ( is_file(CONTENT_ROOT.$path.'index.php') ) 
-			$content = $path.'index';
-		break;
-	default:
-
-		$or = str_replace('/','',str_replace($path,'',$request));
-		if( is_file(CONTENT_ROOT.$path.$or.'.php') )
-			$content = $path.$or;
-		else $content = str_replace('/','',$request);
-		break;
-}
-
-
-chdir(CONTENT_ROOT);
-
-if( file_exists('./'.$content.'.php') ){
+/* */
+if( !(count($request_parts)===1 && 
+	$content=='/index.php' && $request != '/') && 
+	file_exists($path.$content) ){
+	/* */
+	$base_dir = pathinfo($path.$content);
+	chdir($base_dir['dirname']);
 	
+	/* */
 	ob_start();
-	include './'.$content.'.php';
+	include $path.$content;
 	
 	if( isset($enforce_login) && $enforce_login ){
-		header('HTTP/1.1 403 Forbidden');
-		ob_end_clean();
+		
+		if( isset($_REQUEST['r']) ){
+			header('HTTP/1.1 403 Forbidden');
+			ob_end_clean();
+		}
+		else {
+			ob_end_clean();
+			header("Location: $login_redirect");
+		}
+		
 		exit();
 	}
 	
@@ -82,5 +95,5 @@ if( file_exists('./'.$content.'.php') ){
 }
 else {
 	header('HTTP/1.0 404 Not Found');
-	include './404.php';
+	include CONTENT_ROOT.'/404.php';
 }

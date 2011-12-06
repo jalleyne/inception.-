@@ -4,9 +4,6 @@
  * 
  */
 
-ini_set('display_errors',TRUE);
-
-
 /* Load global settings */
 require_once $_SERVER['DOCUMENT_ROOT']."/settings.php";
 
