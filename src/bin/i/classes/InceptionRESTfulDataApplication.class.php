@@ -87,13 +87,6 @@ class InceptionRESTfulDataApplication {
 	**/
 	protected function parseRequestURI(){
 		/* */
-		if( $_SERVER['SCRIPT_NAME']=='/index.php' )
-			$this->uri = str_ireplace(
-								'?' . $_SERVER['QUERY_STRING'],
-								'',
-								$_SERVER['REQUEST_URI'] 
-							);
-		else 
 		$this->uri = str_ireplace(
 							dirname($_SERVER['SCRIPT_NAME']),
 							'',
@@ -107,6 +100,7 @@ class InceptionRESTfulDataApplication {
 		$this->uri_parts = array_values(
 								array_filter(
 									explode( '/', $this->uri )));	
+
 	}
 	
 	
@@ -265,15 +259,16 @@ class InceptionRESTfulDataApplication {
 			foreach( $handler->parameters as $params ){
 				foreach( $params as $param ){
 					/* */
-					if( !isset($_REQUEST[ (string)$param->attributes()->name ]) || 
-						(isset($_REQUEST[ (string)$param->attributes()->name ]) && 
-							empty($_REQUEST[ (string)$param->attributes()->name ])) ){
+					if( !isset($this->request_data[ (string)$param->attributes()->name ]) ||
+						(isset($this->request_data[ (string)$param->attributes()->name ]) && 
+							empty($this->request_data[ (string)$param->attributes()->name ])) ){
+							
 						$errors[] = new HTTPRequestError( 
 												(string)$param->attributes()->name,
 												"Required field"
 									 		);
 					}else if( $error = validate( 
-										$_REQUEST[ (string)$param->attributes()->name ], 
+										$this->request_data[ (string)$param->attributes()->name ], 
 										(string)$param->attributes()->type 
 									) ){
 									
@@ -301,10 +296,19 @@ class InceptionRESTfulDataApplication {
 	public function canAccess(){
 		/* */
 		$handler_role = (int)$this->route_handler->attributes()->access;
-		
-		return (boolean)( isset($_SESSION['access_token']) && 
-							($handler_role && 
-								(int)$_SESSION['user_role'] >= $handler_role && 
+		/* */
+		if( isset($_SESSION['user']) )
+			$u = unserialize($_SESSION['user']);
+			
+		/* */
+		if( $handler_role && 
+			(!isset($_SESSION['access_token']) || 
+			!isset($this->request_data['access_token'])) )
+			return FALSE;
+		else
+			/* */
+			return (boolean)( ($handler_role && 
+								isset($u) && (int)$u->role >= $handler_role && 
 								$_SESSION['access_token'] == $this->request_data['access_token']) || 
 								!$handler_role );		
 	}
@@ -318,23 +322,37 @@ class InceptionRESTfulDataApplication {
 		$handlerFunc 	= $this->route_method;
 		
 		/* */
-		$response = $obj->$handlerFunc($this->request_data);
+		$response = $obj->$handlerFunc(
+								$this->request_data,
+								$this->uri_parts
+							);
 			
 		/* */
 		if( $response instanceof HTTPResponse ){
 			/* */
-			if( isset($_REQUEST['response_redirect']) ){
-				$response->redirect( $_REQUEST['response_redirect'] );
+			if( isset($this->request_data['response_redirect']) ){
+				$response->redirect( $this->request_data['response_redirect'] );
 			}
 			else {
 				$response->send();
 			}
 		}
 		else {
-			/* As a fallback print the response */ 
-			exit(json_pretty_print(
-					json_encode($response)
-				));
+			/* */
+			if( isset($this->request_data['response_redirect']) ){
+				/* As a fallback redirect the response */ 
+				header('Location: '.
+						$this->request_data['response_redirect'].
+						'?response='.json_encode($response)
+					);
+				
+			}
+			else {
+				/* As a fallback print the response */ 
+				exit(json_pretty_print(
+						json_encode($response)
+					));
+			}
 		}
 	}
 }

@@ -45,11 +45,16 @@ class HTTPResponse {
 	protected $data;
 
     function __construct() {
-    }    
-
+    }
+    
     public function __set($name, $value) {
         $this->data[$name] = $value;
     }
+    
+	public function setStatus($code,$message){
+		$this->httpStatusCode = $code;
+		$this->httpStatusMessage = $message;
+	}
 
     public function send($data=NULL){
 		/* */
@@ -61,8 +66,22 @@ class HTTPResponse {
     }
 
 	public function redirect($location,$data=NULL){
-		if( $data ) 
-			header("Location: $location&data=".(string)$this);
+		/* */
+		if( !$data || !is_array($data) )
+			$this->data = array('success' => TRUE);
+		else if( is_array($data) )
+			$this->data = array_merge($data,
+								array(
+									'date'		=> time()
+									)
+							);
+		
+		/* */
+		$response = $this->data;
+		
+		/* */
+		if( is_array($response) && count($response) )
+			header("Location: $location?".http_build_query($response));
 		else 
 			header("Location: $location");
 		/* */

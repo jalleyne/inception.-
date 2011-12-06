@@ -29,9 +29,21 @@ if (!session_id()) {
 	session_start();
 }
 
+
+/* 
+* Set language constant, first check the cookie 
+* then resort to default language set in .htaccess file
+*/
+define('LANGUAGE', 		
+		empty($_COOKIE['LANGUAGE'])?
+		getenv('DEFAULT_LANGUAGE'):$_COOKIE['LANGUAGE']
+	);
+
+
 /* Include settings file */
 require_once 'settings.php';
 require_once 'functions.inc.php';
+
 
 /* If database constants defined, instanciate $db object */
 if( defined('DB_HOST') && defined('DB_NAME') ){
@@ -64,12 +76,25 @@ if( $map=$i->parseRouteMap() ){
 							);
 			
 			/* If redirect param is set redirect the response */
-			if( isset($_REQUEST['error_redirect']) ){
+			if( isset($_REQUEST['response_redirect']) ){
+				
+					
+				/* */
+				if( isset($_REQUEST['formid']) )
+					$data = array(
+										"errors" => $errors,
+										"form"	 => $i->request_data
+									);
+				else $data = $errors;
+				
+				
+				/* */
 				$response->redirect(
-							$_REQUEST['error_redirect'],
-							$errors
+							$_REQUEST['response_redirect'],
+							$data
 						);
 			}
+			
 			/* else print the response as body*/
 			else {
 				$response->send($errors);

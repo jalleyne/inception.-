@@ -29,8 +29,6 @@ class HTTPErrorResponse extends HTTPResponse {
 	
 	public $type;
 	
-	private $errors;
-	
 	/**
 	* Constructor
 	*/

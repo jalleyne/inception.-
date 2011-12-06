@@ -31,6 +31,8 @@ class User {
 
 	public $email;
 
+	public $access_token;
+
 	function __construct() {
 	}
 
@@ -38,11 +40,14 @@ class User {
 	 * access control 
 	 */
 	public function login() {
-		$_SESSION['user'] = serialize($this);
+		$_SESSION['user'] 			= serialize($this);
+		$_SESSION['access_token'] 	= 
+		$this->access_token			= base64_encode(md5($_SESSION['user'].microtime())).microtime();
 	}
 
 	public function logout() {
 		unset ($_SESSION['user']);
+		unset ($_SESSION['access_token']);
 	}
 
 	/*
@@ -152,7 +157,14 @@ class User {
 			$this->getPasswordResetUrl($token)
 		);
 
-		return send_email($subject, $this->username, $this->email, NOREPLY_EMAIL, EMAIL_SENDER_FROM, replace_message_vars($vars, $values, $message));
+		return send_email(
+					$subject, 
+					$this->username, 
+					$this->email, 
+					NOREPLY_EMAIL, 
+					EMAIL_SENDER_NAME, 
+					replace_message_vars($vars, $values, $message)
+				);
 	}
 
 	/*

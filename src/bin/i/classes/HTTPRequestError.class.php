@@ -28,9 +28,10 @@ class HTTPRequestError extends HTTPErrorResponse {
 	/**
 	* Constructor
 	*/
-	function __construct($type=NULL,$message=NULL){
+	function __construct($type=NULL,$message=NULL,$data=NULL){
 		if( $type ) $this->type 		= $type;
 		if( $message ) $this->message 	= $message;
+		if( $data ) $this->data 	= $data;
 		
 		$this->httpStatusCode = 400;
 		$this->httpStatusMessage = 'Bad Request';
