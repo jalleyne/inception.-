@@ -1,4 +1,71 @@
 <?php
+/**
+ * Copyright 2011 Jovan Alleyne <me@jalleyne.ca>.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
+ */
+
+
+
+/**
+* User defined functions
+*/
+
+
+
+
+
+/**
+* Functions
+*/
+
+
+/*
+ *
+ */
+$queued_scripts = array();
+
+function queue_js($scripts){
+	global $queued_scripts;
+	if( is_array($scripts) )
+		$queued_scripts = array_merge($queued_scripts,$scripts);
+	else $queued_scripts[] = $scripts;
+}
+
+function print_queued_scripts(){
+	global $queued_scripts;
+	foreach ( $queued_scripts as $script )
+		echo "<script src=\"$script\"></script>";
+} 
+
+/*
+ *
+ */
+$queued_inline_js = array();
+
+function queue_inline_js($script){
+	global $queued_inline_js;
+	$queued_inline_js[] = $script;
+}
+
+function print_queued_inline_js(){
+	global $queued_inline_js;
+	foreach ( $queued_inline_js as $script )
+		echo PHP_EOL."<script type=\"text/javascript\">".$script."</script>".PHP_EOL;
+}
+
+
+
 
 /* */
 define('CRLF',"\n");
