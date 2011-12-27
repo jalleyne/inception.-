@@ -42,7 +42,9 @@ class User {
 	public function login() {
 		$_SESSION['user'] 			= serialize($this);
 		$_SESSION['access_token'] 	= 
-		$this->access_token			= base64_encode(md5($_SESSION['user'].microtime())).microtime();
+		$this->access_token			= 	str_replace(' ','_',
+											base64_encode(md5($_SESSION['user'].microtime())).
+											microtime());
 	}
 
 	public function logout() {
@@ -191,10 +193,86 @@ class User {
 			$this->email 		= $u['email'];
 			$this->username 	= $u['username'];
 			$this->activated 	= $u['activated'];
-		} else {
-			return null;
-		}
+			
+			return TRUE;
+		} else
+			return NULL;
 	}
+	
+	
+	/*
+	 * user meta data
+	 */
+	
+	
+	/*
+	 * 
+	 */
+	public function writeUserMeta( $key, $value ){
+		global $db;
+		//
+		$q = $db->prepare(
+							'INSERT INTO `user_meta` ' .
+							'(`uid`,`key`,`value`) ' .
+							'VALUES(%d,\'%s\',\'%s\'); ',
+							
+							array(
+								$this->id,
+								$key,
+								$value
+							)
+						);
+		//
+		$r = $db->query( $q );
+		if( $r ) return $db->getLastInsertID();
+		else return FALSE; 
+	}
+	
+	public function updateUserMeta( $key, $value ){
+		global $db;
+		//
+		$q = $db->prepare(
+							'UPDATE `user_meta` ' .
+							'SET `value`=\'%s\' ' .
+							'WHERE `uid`=%s AND `key`=\'%s\'; ',
+							
+							array(
+								$value,
+								$this->id,
+								$key
+							)
+						);		
+		//
+		if( $db->query( $q ) ) return TRUE;
+		else return FALSE;
+	}
+	
+	/*
+	 * 
+	 */
+	public function loadUserMeta( ){
+		global $db;
+		//
+		$q = $db->prepare(
+							'SELECT `key`,`value` ' .
+							'FROM `user_meta` ' .
+							'WHERE `uid`=%s; ',
+							
+							array(
+								$this->id,
+							)
+						);
+		//
+		$r = $db->query( $q );
+		if( $r ) {
+			$meta = array();
+			while($um=mysql_fetch_assoc($r))
+				$meta[$um['key']] = $um['value'];
+			return  $meta;
+		}
+		else return FALSE; 
+	}
+	
 
 }
 ?>

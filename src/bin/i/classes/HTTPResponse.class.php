@@ -43,13 +43,23 @@ class HTTPResponse {
 	* Response body
 	*/
 	protected $data;
-
+	
+	/**
+	* Pagination data
+	*/
+	protected $pagination;
+	
+	/* CONSTRUCTOR */
     function __construct() {
     }
     
     public function __set($name, $value) {
         $this->data[$name] = $value;
     }
+
+	public function setPagingData($data){
+		$this->pagination = $data;
+	}
     
 	public function setStatus($code,$message){
 		$this->httpStatusCode = $code;
@@ -69,19 +79,24 @@ class HTTPResponse {
 		/* */
 		if( !$data || !is_array($data) )
 			$this->data = array('success' => TRUE);
-		else if( is_array($data) )
-			$this->data = array_merge($data,
-								array(
-									'date'		=> time()
-									)
-							);
+		else if( is_array($data) ){
+			/* */
+			$this->data 		= array();
+			/* */
+			foreach( $data as $r ){
+				$this->data[] = array(
+										'type'		=> $r->type,
+										'message'	=> $r->message
+									);
+			}
+			/* */
+			$this->data['error'] = TRUE;
+			$this->data['date'] = time();
+		}
 		
 		/* */
-		$response = $this->data;
-		
-		/* */
-		if( is_array($response) && count($response) )
-			header("Location: $location?".http_build_query($response));
+		if( $this->data )
+			header("Location: $location?".http_build_query($this->data));
 		else 
 			header("Location: $location");
 		/* */
@@ -90,19 +105,26 @@ class HTTPResponse {
 	
 	
 	public function __toString(){
-		
+		/* */
+		$response = array(
+						'date' => time()
+					);
+					
+		/* */
 		$data = $this->data;
-		
-		if( !$data || !is_array($data) ){
+		if( !$data || !is_array($data) )
 			$data = array('success' => TRUE);
-		}
 		
+		/* */
+		if( is_array($this->pagination) )
+			$response['pages'] = $this->pagination;
+		
+		/* */
 		return json_pretty_print(
 				json_encode(
 					array_merge($data,
-						array(
-						'date'		=> time()
-						))
+						$response
+						)
 					)
 				);
 	}

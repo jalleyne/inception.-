@@ -27,7 +27,7 @@ class InceptionRESTfulDataApplication {
     /**
     * Version.
     */
-    const VERSION = '0.1';
+    const VERSION = '0.3';
 
 	/**
 	* Raw URI of the request
@@ -69,9 +69,9 @@ class InceptionRESTfulDataApplication {
 	/*
 	* Constructor
 	**/
-	function __construct(){
+	function __construct($uri=NULL){
 		/* */
-		$this->parseRequestURI();
+		$this->parseRequestURI($uri);
 	}
 	
 	/*
@@ -85,22 +85,33 @@ class InceptionRESTfulDataApplication {
 	/*
 	* Parse Request URI for meaningful parts
 	**/
-	protected function parseRequestURI(){
+	protected function parseRequestURI($uri=NULL){
+		/* */
+		$uri = $uri ? $uri : $_SERVER['REQUEST_URI'];
+		
+		/* */
+		$parent_folder = dirname($_SERVER['SCRIPT_NAME']);
+		
 		/* */
 		$this->uri = str_ireplace(
-							dirname($_SERVER['SCRIPT_NAME']),
+							'?' . $_SERVER['QUERY_STRING'],
 							'',
-							str_ireplace(
-								'?' . $_SERVER['QUERY_STRING'],
-								'',
-								$_SERVER['REQUEST_URI'] 
-							)
+							$uri 
 						);
+	
+		/* */
+		if( $parent_folder != '/' ){
+			$this->uri = str_ireplace(
+								dirname($_SERVER['SCRIPT_NAME']),
+								'',
+								$this->uri
+							);
+		}
+	
 		/* */
 		$this->uri_parts = array_values(
 								array_filter(
-									explode( '/', $this->uri )));	
-
+									explode( '/', $this->uri )));
 	}
 	
 	
@@ -173,22 +184,24 @@ class InceptionRESTfulDataApplication {
 			/* */
 			$handler = $this->getRouteHandler($method);	
 			
-			/* */
-			$handlerFunc 	= (string)$handler->attributes()->responder;
-			
-			/* */
-			$handlerInst =  $this->getRouteHandlerInstance();
+			if( $handler ){
+				/* */
+				$handlerFunc 	= (string)$handler->attributes()->responder;
 
-			/* */
-			if( isset($handlerFunc) && method_exists($handlerInst,$handlerFunc) ){
-				$this->route_handler 	= $handler;
-				$this->route_method 	= $handlerFunc;
+				/* */
+				$handlerInst =  $this->getRouteHandlerInstance();
+				
+				/* */
+				if( isset($handlerFunc) && method_exists($handlerInst,$handlerFunc) ){
+					$this->route_handler 	= $handler;
+					$this->route_method 	= $handlerFunc;
 
-				return TRUE;
+					return TRUE;
+				}
 			}
-			else return NULL;
 		}
-		else return NULL;
+		
+		return NULL;
 	}
 	
 	/*
@@ -326,7 +339,10 @@ class InceptionRESTfulDataApplication {
 								$this->request_data,
 								$this->uri_parts
 							);
-			
+		return $response;
+	}
+	
+	public function handleResponse($response){
 		/* */
 		if( $response instanceof HTTPResponse ){
 			/* */
@@ -355,4 +371,5 @@ class InceptionRESTfulDataApplication {
 			}
 		}
 	}
+	
 }

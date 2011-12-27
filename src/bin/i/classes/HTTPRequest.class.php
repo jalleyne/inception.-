@@ -24,49 +24,129 @@
  */
 class HTTPRequest {
 
-	/**
-	* cURL handle
-	*/
-	protected $ch;
+
+	public $base_uri;
 
 	/**
 	*
 	*/
     function __construct() {
     	
-		$this->ch = curl_init();
-    	
     }
     
 	/**
 	*
 	*/
-    function get($url){
+    function get($url,$response_format="json"){
     	
 		session_write_close();
 		
+		$ch = curl_init();
+		
 		//set the url, number of POST vars, POST data
-		curl_setopt($this->ch,CURLOPT_URL,$url);
+		curl_setopt($ch,CURLOPT_URL,isset($this->base_uri)?$this->base_uri.$url:$url);
 		
 		if( isset($_SERVER['HTTPS'])&&$_SERVER['HTTPS'] )
-			curl_setopt($this->ch,CURLOPT_SSL_VERIFYHOST,2);
+			curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,2);
 	
-		curl_setopt($this->ch,CURLOPT_RETURNTRANSFER,TRUE);
+		curl_setopt($ch,CURLOPT_RETURNTRANSFER,TRUE);
+		curl_setopt($ch,CURLOPT_FOLLOWLOCATION,TRUE);
 		
 		if( isset($_COOKIE['PHPSESSID']) )
-			curl_setopt($this->ch,CURLOPT_COOKIE,'PHPSESSID=' . $_COOKIE['PHPSESSID']);
+			curl_setopt($ch,CURLOPT_COOKIE,'PHPSESSID=' . $_COOKIE['PHPSESSID']);
 		
-		curl_setopt($this->ch,CURLOPT_COOKIESESSION,TRUE);
+		curl_setopt($ch,CURLOPT_COOKIESESSION,TRUE);
+	 	curl_setopt($ch,CURLOPT_USERAGENT,$_SERVER['HTTP_USER_AGENT']);
 		
 		//execute post
-		$result = curl_exec($this->ch);
+		$result = curl_exec($ch);
 		
 		//close connection
-		curl_close($this->ch);
+		curl_close($ch);
 		
-		session_start();
+		@session_start();
+		/* */
+		switch($response_format){
+			case 'json':
+				$result = json_decode($result,TRUE);
+				break;
+		}
 		
+		/* */
 		return $result;
     }
-    
+	
+	/**
+	*
+	*/
+    function post($url,$data=NULL,$response_format="json",$content_type="application/x-www-form-urlencoded"){
+		/* */
+		session_write_close();
+		/* */
+		$ch = curl_init();
+		
+		//set the url, number of POST vars, POST data
+		curl_setopt($ch,CURLOPT_URL,isset($this->base_uri)?$this->base_uri.$url:$url);
+		
+		/* */
+		if( count($data) ){
+			
+			curl_setopt($ch,CURLOPT_POST,TRUE);
+
+			switch($content_type){
+				case 'multipart':
+				case 'multipart/form-data':
+					/* */
+					$mp_boundary = generate_multipart_boundary();
+					/* */
+					$data = build_multipart_body($data,$mp_boundary);
+					/* */
+					curl_setopt($ch,CURLOPT_HTTPHEADER, array(
+												"Content-Type: multipart/form-data; boundary=$mp_boundary",
+												"Content-Legnth: ".strlen($data).";")
+										);
+					curl_setopt($ch,CURLOPT_POSTFIELDS,$data);
+					break;
+				
+				default:
+					curl_setopt($ch,CURLOPT_HTTPHEADER,array(
+												"Content-type: application/x-www-form-urlencoded")
+											);
+					curl_setopt($ch,CURLOPT_POSTFIELDS,http_build_query($data));
+					break;
+			}
+			
+		}
+		/* */
+		if( isset($_SERVER['HTTPS'])&&$_SERVER['HTTPS']=='on' )
+			curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,2);
+	
+		curl_setopt($ch,CURLOPT_RETURNTRANSFER,TRUE);
+		curl_setopt($ch,CURLOPT_FOLLOWLOCATION,TRUE); 
+	 	curl_setopt($ch,CURLOPT_USERAGENT,$_SERVER['HTTP_USER_AGENT']);
+	
+		if( isset($_COOKIE['PHPSESSID']) )
+			curl_setopt($ch,CURLOPT_COOKIE,'PHPSESSID=' . $_COOKIE['PHPSESSID']);
+		
+		curl_setopt($ch,CURLOPT_COOKIESESSION,TRUE);
+		
+		//execute post
+		$result = curl_exec($ch);
+		
+		//close connection
+		curl_close($ch);
+		
+		@session_start();
+
+		/* */
+		switch($response_format){
+			case 'json':
+				$result = json_decode($result,TRUE);
+				break;
+		}
+		
+		/* */
+		return $result;
+    }
+	
 }
