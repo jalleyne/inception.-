@@ -26,6 +26,98 @@
 
 
 /**
+* User defined functions
+*/
+
+
+/**
+ *
+ */
+function distance_haversine($lat1, $lon1, $lat2, $lon2) {
+	/* */
+ 	$earth_radius = 3960.00; # in miles
+
+	/* */
+	$delta_lat = $lat2 - $lat1 ;
+	$delta_lon = $lon2 - $lon1 ;  
+
+	/* */
+  	$alpha    = $delta_lat/2;
+  	$beta     = $delta_lon/2;
+  	$a        = sin(deg2rad($alpha)) * 
+					sin(deg2rad($alpha)) + 
+					cos(deg2rad($lat1)) * 
+					cos(deg2rad($lat2)) * 
+					sin(deg2rad($beta)) * 
+					sin(deg2rad($beta)) ;
+					
+	/* */
+	$c        = asin(min(1, sqrt($a)));
+  	$distance = 2*$earth_radius * $c;
+  	$distance = round($distance, 4);
+ 
+  	return $distance;
+}
+
+/**
+ *
+ */
+function if_empty($var,$var1){
+	return empty($var)||!count($var)?
+		$var1:
+		$var;
+}
+
+/**
+ *
+ */
+function if_not_empty($var,$key,&$col){
+	if( isset($var[$key]) ){
+		$val = trim($var[$key]);
+		if( !empty($val) ){
+			$col[$key] = $var[$key];
+			return TRUE;
+		}
+	}
+	return NULL;
+}
+
+/**
+ *
+ */
+function push_non_empty($val,&$coll,$format=NULL){
+	return !empty($val)&&count($val)?
+				($coll[]=$format?sprintf($format,$val):$val):
+				NULL;
+}
+
+
+function get_mime_type($file){
+	/* */
+	if( function_exists('finfo_open') )
+		$finfo = finfo_open(FILEINFO_MIME_TYPE);
+		
+	/* */
+	if( function_exists('finfo_file') ) 
+		$type = finfo_file(
+					$finfo, 
+					$file);
+	else $type = mime_content_type($file);
+	
+	/* */	
+	if( function_exists('finfo_close') )
+		finfo_close($finfo);
+		
+	return $type;
+}
+
+
+/**
+* Functions
+*/
+
+
+/**
  * Validate email address. This email validator checks the domain
  * portion of the address as a valid domain using PHP checkdnsrr function
  * to validate the domain is reachable. Other checks are also made against
@@ -128,25 +220,90 @@ function is_valid_postalcode( $pcode ){
  * @return 
  */
 function validate($val,$type){
-	
-	switch($type){
-		
-		case 'array':
-			if( is_array($val) && count($val) ){
-				foreach( $val as $v )
-					if( !strlen($v) )
-						return 'Required field';
-			}
-			else return 'Required field';
-			break;
+	/* */
+	$types = explode('|',$type);
+	/* */
+	foreach( $types as $type ){
+		switch($type){
+			/* */
+			case 'futuredate':
 			
-		case 'postalcode':
-			if( !is_valid_postalcode( $val ) ) return "Invalid Postal code"; 
-			break;
+				if( ($date=strtotime($val))!==FALSE ){
+					if( $date<=strtotime('today') ){
+						return "Date must be in the future";
+					}
+				}
+				else return "Invalid Date";
+				break;
 			
-		case 'email':
-			if( !is_valid_email( $val ) ) return "Invalid email address"; 
-			break;
+			/* */
+			case 'time':
+				
+				break;
+				
+			/* */
+			case 'boolean':
+			case 'bool':
+				if( $val != 'TRUE' && $val != 'FALSE' )
+					return "'TRUE' or 'FALSE' expected";
+				break;
+			
+			/* */
+			case 'int':
+				if( !is_numeric($val) || 
+					(is_numeric($val)&&(int)$val!=$val) )
+					return "Invalid field";
+				break;
+				
+			/* */
+			case 'string[]':
+			case 'int[]':
+			case 'array':
+				if( is_array($val) && count($val) ){
+					foreach( $val as $v )
+						if( !strlen($v) )
+							return 'Required field';
+				}
+				else return 'Required field';
+
+				break;
+			/* */
+			case 'postalzip':
+				if( !is_valid_postalcode( $val ) &&  
+					!is_valid_zipcode( $val ) ) 
+					return "Invalid Postal/ Zip code"; 
+				break;
+			/* */
+			case 'postalcode':
+				if( !is_valid_postalcode( $val ) ) 
+					return "Invalid Postal code"; 
+				break;
+			/* */
+			case 'email':
+				if( !is_valid_email( $val ) ) 
+					return "Invalid email address"; 
+				break;
+				
+			/* */
+			case 'phonenumber':
+			
+				$p = is_array($val)?implode('-',$val):$val;
+			
+				if( !is_valid_phone( $p ) ) 
+					return "Invalid Phone number"; 
+				break;
+			/* */
+			case 'province':
+				break;
+			/* */
+			case 'state':
+				break;
+			/* */
+			case 'captcha':
+			  	if( !is_valid_captcha( $val ) ) 
+					return "Invalid captcha"; 
+				break;
+		}
 	}
 	
 	return NULL;
@@ -265,12 +422,12 @@ function replace_message_vars($vars,$values,$message){
  *
  * @return 
  */
-function email_headers($from,$from_name){
+function email_headers($from,$from_name,$mimetype="text/plain"){
 		$headers  = 'MIME-Version: 1.0'.PHP_EOL;
 		$headers .= 'From: "'.$from_name.'" <'.$from.'>'.PHP_EOL;
 		$headers .= 'Reply-To: '.$from.PHP_EOL;
 		$headers .= 'Return-Path: <'.$from.'>'.PHP_EOL;
-		$headers .= 'Content-Type: text/plain'. PHP_EOL;
+		$headers .= 'Content-Type: '.$mimetype. PHP_EOL;
 		$headers .= 'Content-Transfer-Encoding: utf-8' . PHP_EOL;
 		$headers .= 'X-Mailer: PHP/' . phpversion() . PHP_EOL;
 		
