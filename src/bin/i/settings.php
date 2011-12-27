@@ -4,8 +4,13 @@
  * 
  */
 
+
 /* Load global settings */
 require_once $_SERVER['DOCUMENT_ROOT']."/settings.php";
+
+/* Load global functions */
+require_once $_SERVER['DOCUMENT_ROOT'].'/php/functions.inc.php';
+require_once 'functions.inc.php';
 
 
 
@@ -18,9 +23,9 @@ define('CONATCT_REQUEST_RECEPIENT_EMAIL', 	'consumer-response@domain.com');
 
 /* Paths to load into include path settings */
 $lib_paths = array();
-$lib_paths[] = getcwd().'/classes';
-$lib_paths[] = getcwd().'/handlers';
-$lib_paths[] = getcwd();
+$lib_paths[] = $_SERVER['DOCUMENT_ROOT'].'/i/classes';
+$lib_paths[] = $_SERVER['DOCUMENT_ROOT'].'/i/handlers';
+$lib_paths[] = $_SERVER['DOCUMENT_ROOT'].'/i';
 
 
 /* */
@@ -38,3 +43,9 @@ function __autoload($class_name) {
     include $class_name . '.class.php';
 }
 
+
+
+/* If database constants defined, instanciate $db object */
+if( defined('DB_HOST') && defined('DB_NAME') ){
+	$db = new DBO();
+}
