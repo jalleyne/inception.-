@@ -22,14 +22,6 @@
  * @author Jovan Alleyne <me@jalleyne.ca>
  */
 
-
-/* */
-if( !defined('CONTENT_ROOT') )
-	require_once $_SERVER['DOCUMENT_ROOT'].'/settings.php';
-	
-
-/* */
-require_once $_SERVER['DOCUMENT_ROOT'].'/php/functions.inc.php';
 	
 	
 /* */
@@ -66,19 +58,20 @@ while(count($request_parts)){
 }
 
 /* */
-if( !(count($request_parts)===1 && 
-	$content=='/index.php' && $request != '/') && 
-	file_exists($path.$content) ){
+if( file_exists($path.$content) ){
 	/* */
 	$base_dir = pathinfo($path.$content);
 	chdir($base_dir['dirname']);
 	
 	/* */
 	ob_start();
+	
+	/* */
 	include $path.$content;
 	
+	/* */
 	if( isset($enforce_login) && $enforce_login ){
-		
+		/* */
 		if( isset($_REQUEST['r']) ){
 			header('HTTP/1.1 403 Forbidden');
 			ob_end_clean();
@@ -90,7 +83,7 @@ if( !(count($request_parts)===1 &&
 		
 		exit();
 	}
-	
+	/* */
 	ob_end_flush();
 }
 else {
