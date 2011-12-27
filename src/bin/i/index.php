@@ -23,118 +23,24 @@
  * @author Jovan Alleyne <me@jalleyne.ca>
  */
 
-
 /* Begin session */
 if (!session_id()) {
 	session_start();
 }
-
-
 /* 
 * Set language constant, first check the cookie 
 * then resort to default language set in .htaccess file
 */
-define('LANGUAGE', 		
-		empty($_COOKIE['LANGUAGE'])?
-		getenv('DEFAULT_LANGUAGE'):$_COOKIE['LANGUAGE']
-	);
+if( !defined('LANGUAGE') )
+	define('LANGUAGE', 		
+				empty($_COOKIE['LANGUAGE'])?
+				getenv('DEFAULT_LANGUAGE'):$_COOKIE['LANGUAGE']
+			);
 
 
 /* Include settings file */
 require_once 'settings.php';
 require_once 'functions.inc.php';
 
-
-/* If database constants defined, instanciate $db object */
-if( defined('DB_HOST') && defined('DB_NAME') ){
-	$db = new DBO();
-}
-
-
-/* Instanciate InceptionWebServiceApplication class */
-$i = new InceptionRESTfulDataApplication();
-
-/* Load Route map from file system */
-$i->loadRouteMap(ROUTE_FILE_PATH);
-
-/* Parse loaded XML Route map */
-if( $map=$i->parseRouteMap() ){
-	
-	/* Read request data based on request method */
-	$i->readRequestData();
-	
-	/* Determine if user can access resource based on Route definition */
-	if( $i->canAccess() ){
-		
-		/* Validate request parameters */
-		if( $errors = $i->validateRequest() ){
-			
-			/* */
-			$response = new HTTPRequestError(
-								'ResourceParameterException',
-								'Required parameters not included.'
-							);
-			
-			/* If redirect param is set redirect the response */
-			if( isset($_REQUEST['response_redirect']) ){
-				
-					
-				/* */
-				if( isset($_REQUEST['formid']) )
-					$data = array(
-										"errors" => $errors,
-										"form"	 => $i->request_data
-									);
-				else $data = $errors;
-				
-				
-				/* */
-				$response->redirect(
-							$_REQUEST['response_redirect'],
-							$data
-						);
-			}
-			
-			/* else print the response as body*/
-			else {
-				$response->send($errors);
-			}
-		}
-		else{
-			/* Delegate request to mapped handler */
-			$i->delegateRequest();
-		}
-	}
-	/* Respond with access denied */
-	else {
-		$response = new HTTPRequestError(
-							'AuthenticationException',
-							'Access to the requested resource has been denied.'
-						);
-		$response->send();
-	}
-}
-
-/* Route was found but no method mapped to $_SERVER['REQUEST_METHOD'] */
-else if( $map === FALSE ){
-	/* */
-	$response = new HTTPRequestError(
-						'ResourceHandlerException',
-						'The request [:'.$i->uri.'] does not support '.
-						'the request method [:'.$_SERVER['REQUEST_METHOD'].'].'
-					);
-	$response->send();
-	
-}
-
-/* No Route found in mapping data */
-else {
-	/* */
-	$response = new HTTPRequestError(
-						'ResourceHandlerException',
-						'The request [:'.$i->uri.'] does not exist.'
-					);
-	$response->send();
-}
-
-exit();
+/* */
+require_once "inception.php";
